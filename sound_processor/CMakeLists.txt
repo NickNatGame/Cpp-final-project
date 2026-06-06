@@ -1,6 +1,7 @@
 add_executable(sound_processor
     src/main.cpp
     src/waveform.cpp
+    src/wav_io.cpp
 )
 
 target_include_directories(sound_processor
