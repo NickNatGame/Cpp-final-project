@@ -1,5 +1,7 @@
 add_executable(sound_processor
     src/main.cpp
+    src/app/application.cpp
+    src/app/logger.cpp
     src/waveform.cpp
     src/wav_io.cpp
 )

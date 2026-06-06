@@ -1,25 +1,26 @@
+#include "sound_processor/app/application.h"
+#include "sound_processor/app/result_code.h"
+
+#include <exception>
 #include <iostream>
 
-namespace {
+int main(int argc, char *argv[])
+{
+    sound_processor::Application application(std::cout, std::cerr);
 
-void PrintHelp() {
-    std::cout
-        << "Sound Processor\n"
-        << "Usage:\n"
-        << "  sound_processor [-i input.wav] [-o output.wav] "
-        << "[-f filter [params...]]...\n";
-}
-
-}  // namespace
-
-int main(int argc, char* argv[]) {
-    static_cast<void>(argv);
-
-    if (argc == 1) {
-        PrintHelp();
-        return 0;
+    try
+    {
+        application.configure();
+        return static_cast<int>(application.start(argc, argv));
     }
-
-    std::cout << "Sound Processor project scaffold is ready.\n";
-    return 0;
+    catch (const std::exception &error)
+    {
+        std::cerr << "[Error] " << error.what() << '\n';
+        return static_cast<int>(sound_processor::ResultCode::unhandledException);
+    }
+    catch (...)
+    {
+        std::cerr << "[Error] Unknown exception\n";
+        return static_cast<int>(sound_processor::ResultCode::unknownException);
+    }
 }
