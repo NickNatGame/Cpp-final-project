@@ -1,0 +1,36 @@
+#pragma once
+
+#include "sound_processor/cli/parsed_args.h"
+
+#include <string>
+
+namespace sound_processor
+{
+
+    class ArgsParser
+    {
+    public:
+        enum class Result
+        {
+            ok,
+            noArgs,
+            badArgs
+        };
+
+        [[nodiscard]] Result parse(int argc, char *argv[]);
+        [[nodiscard]] const ParsedArgs &args() const noexcept;
+        [[nodiscard]] const std::string &error() const noexcept;
+
+    private:
+        static bool isKnownFlag(const std::string &token);
+        static bool isFlagLike(const std::string &token);
+        bool consumeFileName(int argc, char *argv[], int &index, std::optional<std::string> &target,
+                             const std::string &flag_name);
+        bool consumeFilterDescriptor(int argc, char *argv[], int &index);
+        void fail(std::string message);
+
+        ParsedArgs args_;
+        std::string error_;
+    };
+
+} // namespace sound_processor
