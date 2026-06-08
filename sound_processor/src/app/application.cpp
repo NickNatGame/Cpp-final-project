@@ -1,6 +1,7 @@
 #include "sound_processor/app/application.h"
 
 #include "sound_processor/filtering/pipeline.h"
+#include "sound_processor/filtering/std_filter_producers.h"
 #include "sound_processor/waveform.h"
 
 #include <ostream>
@@ -17,6 +18,7 @@ namespace sound_processor
 
     void Application::configure()
     {
+        RegisterTransformFilters(filter_registry_);
         configured_ = true;
     }
 

@@ -6,6 +6,12 @@ add_executable(sound_processor
     src/filtering/filter_registry.cpp
     src/filtering/pipeline.cpp
     src/filtering/pipeline_factory.cpp
+    src/filtering/std_filter_producers.cpp
+    src/filters/ampl_filter.cpp
+    src/filters/lowpass_filter.cpp
+    src/filters/normalize_filter.cpp
+    src/filters/silence_filter.cpp
+    src/filters/timestretch_filter.cpp
     src/waveform.cpp
     src/wav_io.cpp
 )
