@@ -8,6 +8,9 @@ add_executable(sound_processor
     src/filtering/pipeline_factory.cpp
     src/filtering/std_filter_producers.cpp
     src/filters/ampl_filter.cpp
+    src/filters/generators/am_generator_filter.cpp
+    src/filters/generators/fm_generator_filter.cpp
+    src/filters/generators/sine_generator_filter.cpp
     src/filters/lowpass_filter.cpp
     src/filters/normalize_filter.cpp
     src/filters/silence_filter.cpp

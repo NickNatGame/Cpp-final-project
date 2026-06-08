@@ -1,6 +1,9 @@
 #include "sound_processor/filtering/std_filter_producers.h"
 
 #include "sound_processor/filters/ampl_filter.h"
+#include "sound_processor/filters/generators/am_generator_filter.h"
+#include "sound_processor/filters/generators/fm_generator_filter.h"
+#include "sound_processor/filters/generators/sine_generator_filter.h"
 #include "sound_processor/filters/lowpass_filter.h"
 #include "sound_processor/filters/normalize_filter.h"
 #include "sound_processor/filters/silence_filter.h"
@@ -105,6 +108,45 @@ namespace sound_processor
             RequireParamCount(descriptor, 1, 1);
             return std::make_unique<LowpassFilter>(ParseSize(descriptor.params[0], "lowpass window_size"));
         }
+
+
+        std::unique_ptr<IFilter> CreateGenerator(const FilterDescriptor &descriptor)
+        {
+            if (descriptor.params.empty())
+            {
+                throw std::runtime_error("generator requires signal type: sin, am or fm");
+            }
+
+            const std::string &type = descriptor.params[0];
+            if (type == "sin")
+            {
+                RequireParamCount(descriptor, 3, 3);
+                return std::make_unique<SineGeneratorFilter>(ParseDouble(descriptor.params[1], "generator sin frequency_hz"),
+                                                             ParseDouble(descriptor.params[2], "generator sin duration_ms"));
+            }
+            if (type == "am")
+            {
+                RequireParamCount(descriptor, 6, 6);
+                return std::make_unique<AmGeneratorFilter>(
+                    ParseDouble(descriptor.params[1], "generator am amplitude"),
+                    ParseDouble(descriptor.params[2], "generator am carrier_hz"),
+                    ParseDouble(descriptor.params[3], "generator am modulation_hz"),
+                    ParseDouble(descriptor.params[4], "generator am depth"),
+                    ParseDouble(descriptor.params[5], "generator am duration_ms"));
+            }
+            if (type == "fm")
+            {
+                RequireParamCount(descriptor, 6, 6);
+                return std::make_unique<FmGeneratorFilter>(
+                    ParseDouble(descriptor.params[1], "generator fm amplitude"),
+                    ParseDouble(descriptor.params[2], "generator fm carrier_hz"),
+                    ParseDouble(descriptor.params[3], "generator fm modulation_hz"),
+                    ParseDouble(descriptor.params[4], "generator fm deviation_hz"),
+                    ParseDouble(descriptor.params[5], "generator fm duration_ms"));
+            }
+
+            throw std::runtime_error("Unknown generator type: " + type);
+        }
     } // namespace
 
     void RegisterTransformFilters(FilterRegistry &registry)
@@ -114,6 +156,7 @@ namespace sound_processor
         registry.add("silence", CreateSilence);
         registry.add("timestretch", CreateTimestretch);
         registry.add("lowpass", CreateLowpass);
+        registry.add("generator", CreateGenerator);
     }
 
 } // namespace sound_processor
