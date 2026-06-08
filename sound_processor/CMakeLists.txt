@@ -3,6 +3,9 @@ add_executable(sound_processor
     src/app/application.cpp
     src/app/logger.cpp
     src/cli/args_parser.cpp
+    src/filtering/filter_registry.cpp
+    src/filtering/pipeline.cpp
+    src/filtering/pipeline_factory.cpp
     src/waveform.cpp
     src/wav_io.cpp
 )

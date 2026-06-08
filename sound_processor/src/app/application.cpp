@@ -1,5 +1,6 @@
 #include "sound_processor/app/application.h"
 
+#include "sound_processor/filtering/pipeline.h"
 #include "sound_processor/waveform.h"
 
 #include <ostream>
@@ -39,21 +40,14 @@ namespace sound_processor
             return ResultCode::badArguments;
         }
 
-        const ParsedArgs &args = args_parser_.args();
-        if (!args.filters.empty())
-        {
-            err_.error("Filters are parsed but pipeline execution is not implemented yet");
-            return ResultCode::processingError;
-        }
-
         try
         {
-            return processNoFilters(args);
+            return process(args_parser_.args());
         }
         catch (const std::runtime_error &error)
         {
             err_.error(error.what());
-            return ResultCode::ioError;
+            return ResultCode::processingError;
         }
     }
 
@@ -61,10 +55,10 @@ namespace sound_processor
     {
         out_.info("Sound Processor");
         out_.info("Usage: sound_processor [-i input.wav] [-o output.wav] [-f filter [params...]]...");
-        out_.info("Currently implemented: WAV read/write and command-line parsing.");
+        out_.info("Supported filters will be registered during application configuration.");
     }
 
-    ResultCode Application::processNoFilters(const ParsedArgs &args) const
+    ResultCode Application::process(const ParsedArgs &args) const
     {
         Waveform waveform;
         if (args.input_file.has_value())
@@ -75,6 +69,13 @@ namespace sound_processor
         else
         {
             out_.warning("No input file specified; using an empty waveform");
+        }
+
+        Pipeline pipeline = pipeline_factory_.create(args.filters, filter_registry_);
+        if (!pipeline.empty())
+        {
+            out_.info("Applying filters: " + std::to_string(pipeline.size()));
+            pipeline.apply(waveform);
         }
 
         if (args.output_file.has_value())
