@@ -4,8 +4,10 @@
 #include "sound_processor/filters/generators/am_generator_filter.h"
 #include "sound_processor/filters/generators/fm_generator_filter.h"
 #include "sound_processor/filters/generators/sine_generator_filter.h"
+#include "sound_processor/filters/fade_filter.h"
 #include "sound_processor/filters/lowpass_filter.h"
 #include "sound_processor/filters/normalize_filter.h"
+#include "sound_processor/filters/reverse_filter.h"
 #include "sound_processor/filters/silence_filter.h"
 #include "sound_processor/filters/timestretch_filter.h"
 
@@ -147,6 +149,32 @@ namespace sound_processor
 
             throw std::runtime_error("Unknown generator type: " + type);
         }
+
+
+        std::unique_ptr<IFilter> CreateFade(const FilterDescriptor &descriptor)
+        {
+            RequireParamCount(descriptor, 2, 2);
+            FadeFilter::Mode mode;
+            if (descriptor.params[0] == "in")
+            {
+                mode = FadeFilter::Mode::in;
+            }
+            else if (descriptor.params[0] == "out")
+            {
+                mode = FadeFilter::Mode::out;
+            }
+            else
+            {
+                throw std::runtime_error("fade mode must be either in or out");
+            }
+            return std::make_unique<FadeFilter>(mode, ParseDouble(descriptor.params[1], "fade duration_ms"));
+        }
+
+        std::unique_ptr<IFilter> CreateReverse(const FilterDescriptor &descriptor)
+        {
+            RequireParamCount(descriptor, 0, 0);
+            return std::make_unique<ReverseFilter>();
+        }
     } // namespace
 
     void RegisterTransformFilters(FilterRegistry &registry)
@@ -157,6 +185,8 @@ namespace sound_processor
         registry.add("timestretch", CreateTimestretch);
         registry.add("lowpass", CreateLowpass);
         registry.add("generator", CreateGenerator);
+        registry.add("fade", CreateFade);
+        registry.add("reverse", CreateReverse);
     }
 
 } // namespace sound_processor

@@ -13,6 +13,7 @@ namespace sound_processor
     {
         std::optional<std::string> input_file;
         std::optional<std::string> output_file;
+        std::optional<std::string> config_file;
         std::vector<FilterDescriptor> filters;
         bool help_requested = false;
     };

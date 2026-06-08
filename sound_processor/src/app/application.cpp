@@ -44,7 +44,13 @@ namespace sound_processor
 
         try
         {
-            return process(args_parser_.args());
+            ParsedArgs args = args_parser_.args();
+            if (args.config_file.has_value())
+            {
+                out_.info("Loading JSON config: " + *args.config_file);
+                args = json_loader_.load(*args.config_file);
+            }
+            return process(args);
         }
         catch (const std::runtime_error &error)
         {
@@ -57,7 +63,8 @@ namespace sound_processor
     {
         out_.info("Sound Processor");
         out_.info("Usage: sound_processor [-i input.wav] [-o output.wav] [-f filter [params...]]...");
-        out_.info("Supported filters will be registered during application configuration.");
+        out_.info("       sound_processor -c pipeline.json");
+        out_.info("JSON filters use objects with fields: name, params.");
     }
 
     ResultCode Application::process(const ParsedArgs &args) const

@@ -2,6 +2,7 @@
 
 #include "sound_processor/cli/parsed_args.h"
 
+#include <optional>
 #include <string>
 
 namespace sound_processor
@@ -27,6 +28,7 @@ namespace sound_processor
         bool consumeFileName(int argc, char *argv[], int &index, std::optional<std::string> &target,
                              const std::string &flag_name);
         bool consumeFilterDescriptor(int argc, char *argv[], int &index);
+        bool validateConfigUsage();
         void fail(std::string message);
 
         ParsedArgs args_;

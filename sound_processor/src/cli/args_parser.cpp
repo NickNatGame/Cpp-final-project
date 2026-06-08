@@ -37,6 +37,13 @@ namespace sound_processor
                     return Result::badArgs;
                 }
             }
+            else if (token == "-c" || token == "--config")
+            {
+                if (!consumeFileName(argc, argv, index, args_.config_file, token))
+                {
+                    return Result::badArgs;
+                }
+            }
             else if (token == "-f")
             {
                 if (!consumeFilterDescriptor(argc, argv, index))
@@ -49,6 +56,11 @@ namespace sound_processor
                 fail("Unexpected argument: " + token);
                 return Result::badArgs;
             }
+        }
+
+        if (!validateConfigUsage())
+        {
+            return Result::badArgs;
         }
 
         return Result::ok;
@@ -66,7 +78,8 @@ namespace sound_processor
 
     bool ArgsParser::isKnownFlag(const std::string &token)
     {
-        return token == "-i" || token == "-o" || token == "-f" || token == "-h" || token == "--help";
+        return token == "-i" || token == "-o" || token == "-f" || token == "-c" || token == "--config" ||
+               token == "-h" || token == "--help";
     }
 
     bool ArgsParser::isFlagLike(const std::string &token)
@@ -116,6 +129,20 @@ namespace sound_processor
         }
 
         args_.filters.push_back(std::move(descriptor));
+        return true;
+    }
+
+    bool ArgsParser::validateConfigUsage()
+    {
+        if (!args_.config_file.has_value())
+        {
+            return true;
+        }
+        if (args_.input_file.has_value() || args_.output_file.has_value() || !args_.filters.empty())
+        {
+            fail("Config mode cannot be combined with -i, -o or -f");
+            return false;
+        }
         return true;
     }
 
