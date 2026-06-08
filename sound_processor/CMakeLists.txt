@@ -1,5 +1,4 @@
-add_executable(sound_processor
-    src/main.cpp
+set(SOUND_PROCESSOR_CORE_SOURCES
     src/app/application.cpp
     src/app/logger.cpp
     src/cli/args_parser.cpp
@@ -22,16 +21,42 @@ add_executable(sound_processor
     src/wav_io.cpp
 )
 
-target_include_directories(sound_processor
-    PRIVATE
+add_library(sound_processor_core STATIC
+    ${SOUND_PROCESSOR_CORE_SOURCES}
+)
+
+target_include_directories(sound_processor_core
+    PUBLIC
         include
 )
 
-if(CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang|AppleClang")
-    target_compile_options(sound_processor
-        PRIVATE
-            -Wall
-            -Wextra
-            -Wpedantic
-    )
-endif()
+add_executable(sound_processor
+    src/main.cpp
+)
+
+target_link_libraries(sound_processor
+    PRIVATE
+        sound_processor_core
+)
+
+add_executable(sound_processor_tests
+    tests/test_main.cpp
+)
+
+target_link_libraries(sound_processor_tests
+    PRIVATE
+        sound_processor_core
+)
+
+add_test(NAME sound_processor_tests COMMAND sound_processor_tests)
+
+foreach(target sound_processor_core sound_processor sound_processor_tests)
+    if(CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang|AppleClang")
+        target_compile_options(${target}
+            PRIVATE
+                -Wall
+                -Wextra
+                -Wpedantic
+        )
+    endif()
+endforeach()
