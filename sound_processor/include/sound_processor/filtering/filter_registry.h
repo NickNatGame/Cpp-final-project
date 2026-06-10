@@ -1,23 +1,39 @@
-#pragma once
-
-#include "sound_processor/filtering/filter_producer.h"
-
-#include <memory>
-#include <string>
-#include <unordered_map>
-
-namespace sound_processor
+/**
+ * @brief Registry of available filters.
+ *
+ * Maps filter names to factory functions that
+ * create filter instances.
+ */
+class FilterRegistry
 {
+public:
+    /**
+     * @brief Registers a filter factory.
+     *
+     * @param name Filter name.
+     * @param producer Factory function.
+     */
+    void add(std::string name, FilterProducer producer);
 
-    class FilterRegistry
-    {
-    public:
-        void add(std::string name, FilterProducer producer);
-        [[nodiscard]] bool contains(const std::string &name) const;
-        [[nodiscard]] std::unique_ptr<IFilter> create(const FilterDescriptor &descriptor) const;
+    /**
+     * @brief Checks whether filter exists.
+     *
+     * @param name Filter name.
+     * @return true if registered.
+     */
+    [[nodiscard]] bool contains(const std::string& name) const;
 
-    private:
-        std::unordered_map<std::string, FilterProducer> producers_;
-    };
+    /**
+     * @brief Creates filter instance.
+     *
+     * @param descriptor Filter description.
+     * @return Newly created filter.
+     *
+     * @throws std::runtime_error if filter is unknown.
+     */
+    [[nodiscard]] std::unique_ptr<IFilter>
+    create(const FilterDescriptor& descriptor) const;
 
-} // namespace sound_processor
+private:
+    std::unordered_map<std::string, FilterProducer> producers_;
+};
