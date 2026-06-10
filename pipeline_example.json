@@ -1,0 +1,8 @@
+{
+  "output": "sine.wav",
+  "filters": [
+    { "name": "generator", "params": ["sin", 440, 2000] },
+    { "name": "fade", "params": ["in", 250] },
+    { "name": "ampl", "params": [0.8] }
+  ]
+}

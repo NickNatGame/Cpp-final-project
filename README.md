@@ -27,9 +27,9 @@ cmake --build build
 Examples:
 
 ```bash
-./build/sound_processor/sound_processor -i input.wav -o output.wav -f ampl 0.8
+./build/sound_processor/sound_processor -i input_example.wav -f lowpass 101 -f ampl 10 -o output_example.wav
 ./build/sound_processor/sound_processor -o sine.wav -f generator sin 440 2000 -f fade in 250
-./build/sound_processor/sound_processor -i input.wav -o output.wav -f lowpass 5 -f normalize 0.9
+./build/sound_processor/sound_processor -i input_example.wav -o output_example.wav -f lowpass 5 -f normalize 0.9
 ```
 
 ## JSON usage
