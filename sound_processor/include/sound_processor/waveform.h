@@ -1,3 +1,11 @@
+#pragma once
+
+#include <cstdint>
+#include <vector>
+
+namespace sound_processor
+{
+
 /**
  * @brief Represents a mono PCM audio waveform.
  *
@@ -75,3 +83,5 @@ private:
     std::vector<Sample> samples_;
     std::uint32_t sample_rate_ = kDefaultSampleRate;
 };
+
+} // namespace sound_processor

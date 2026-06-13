@@ -1,3 +1,15 @@
+#pragma once
+
+#include "sound_processor/filtering/ifilter.h"
+#include "sound_processor/waveform.h"
+
+#include <cstddef>
+#include <memory>
+#include <vector>
+
+namespace sound_processor
+{
+
 /**
  * @brief Sequence of audio filters.
  *
@@ -14,32 +26,13 @@ public:
     Pipeline& operator=(Pipeline&&) noexcept = default;
     ~Pipeline() = default;
 
-    /**
-     * @brief Adds filter to pipeline.
-     *
-     * Ownership is transferred to the pipeline.
-     *
-     * @param filter Filter instance.
-     */
     void add(std::unique_ptr<IFilter> filter);
-
-    /**
-     * @brief Applies all filters sequentially.
-     *
-     * @param waveform Waveform to process.
-     */
     void apply(Waveform& waveform) const;
-
-    /**
-     * @brief Checks whether pipeline contains filters.
-     */
     [[nodiscard]] bool empty() const noexcept;
-
-    /**
-     * @brief Returns filter count.
-     */
     [[nodiscard]] std::size_t size() const noexcept;
 
 private:
     std::vector<std::unique_ptr<IFilter>> filters_;
 };
+
+} // namespace sound_processor

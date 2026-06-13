@@ -1,21 +1,41 @@
-/**
- * @brief Converts arbitrary numeric value
- * into valid audio sample.
- *
- * Value is rounded and clamped to the
- * int16_t sample range.
- *
- * @tparam Value Numeric type.
- * @param value Input value.
- * @return Clamped sample.
- */
-template <typename Value>
-[[nodiscard]] Waveform::Sample ClampToSample(Value value);
+#pragma once
+
+#include "sound_processor/waveform.h"
+
+#include <cmath>
+#include <limits>
+
+namespace sound_processor
+{
 
 /**
- * @brief Returns absolute sample amplitude.
- *
- * @param sample Audio sample.
- * @return Absolute value.
+ * @brief Converts arbitrary numeric value into valid int16 audio sample.
  */
-[[nodiscard]] inline int SampleAbs(Waveform::Sample sample) noexcept;
+template <typename Value>
+[[nodiscard]] Waveform::Sample ClampToSample(Value value)
+{
+    const auto rounded = std::llround(static_cast<long double>(value));
+    const auto min_sample = static_cast<long long>(std::numeric_limits<Waveform::Sample>::min());
+    const auto max_sample = static_cast<long long>(std::numeric_limits<Waveform::Sample>::max());
+
+    if (rounded < min_sample)
+    {
+        return std::numeric_limits<Waveform::Sample>::min();
+    }
+    if (rounded > max_sample)
+    {
+        return std::numeric_limits<Waveform::Sample>::max();
+    }
+    return static_cast<Waveform::Sample>(rounded);
+}
+
+/**
+ * @brief Returns absolute sample amplitude without overflowing on -32768.
+ */
+[[nodiscard]] inline int SampleAbs(Waveform::Sample sample) noexcept
+{
+    const int value = static_cast<int>(sample);
+    return value < 0 ? -value : value;
+}
+
+} // namespace sound_processor

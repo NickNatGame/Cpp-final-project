@@ -43,9 +43,25 @@ add_executable(sound_processor_tests
     tests/test_main.cpp
 )
 
+include(FetchContent)
+
+find_package(Catch2 3 CONFIG QUIET)
+
+if(NOT Catch2_FOUND)
+    message(STATUS "Catch2 v3 was not found locally; downloading it with FetchContent")
+    FetchContent_Declare(
+        Catch2
+        GIT_REPOSITORY https://github.com/catchorg/Catch2.git
+        GIT_TAG v3.5.4
+        GIT_SHALLOW TRUE
+    )
+    FetchContent_MakeAvailable(Catch2)
+endif()
+
 target_link_libraries(sound_processor_tests
     PRIVATE
         sound_processor_core
+        Catch2::Catch2WithMain
 )
 
 add_test(NAME sound_processor_tests COMMAND sound_processor_tests)

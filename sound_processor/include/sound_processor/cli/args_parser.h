@@ -1,3 +1,13 @@
+#pragma once
+
+#include "sound_processor/cli/parsed_args.h"
+
+#include <optional>
+#include <string>
+
+namespace sound_processor
+{
+
 /**
  * @brief Command line argument parser.
  *
@@ -17,25 +27,8 @@ public:
         badArgs  ///< Invalid arguments.
     };
 
-    /**
-     * @brief Parses command line arguments.
-     *
-     * @param argc Argument count.
-     * @param argv Argument values.
-     * @return Parsing status.
-     */
     [[nodiscard]] Result parse(int argc, char* argv[]);
-
-    /**
-     * @brief Returns parsed arguments.
-     */
     [[nodiscard]] const ParsedArgs& args() const noexcept;
-
-    /**
-     * @brief Returns error message.
-     *
-     * Empty if parsing succeeded.
-     */
     [[nodiscard]] const std::string& error() const noexcept;
 
 private:
@@ -55,15 +48,11 @@ private:
         int& index);
 
     bool validateConfigUsage();
-
-    /**
-     * @brief Stores parsing error.
-     *
-     * @param message Error description.
-     */
     void fail(std::string message);
 
 private:
     ParsedArgs args_;
     std::string error_;
 };
+
+} // namespace sound_processor
