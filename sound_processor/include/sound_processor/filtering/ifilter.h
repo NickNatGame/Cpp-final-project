@@ -16,9 +16,24 @@ namespace sound_processor
 class IFilter
 {
 public:
+    /**
+     * @brief Destroys a filter through the base interface.
+     */
     virtual ~IFilter() = default;
 
+    /**
+     * @brief Returns human-readable filter name.
+     *
+     * Used for diagnostics, logging and debugging filter pipelines.
+     *
+     * @return Filter name.
+     */
     [[nodiscard]] virtual std::string_view name() const noexcept = 0;
+    /**
+     * @brief Applies the filter to a waveform.
+     *
+     * @param waveform Waveform to process.
+     */
     virtual void apply(Waveform& waveform) const = 0;
 };
 

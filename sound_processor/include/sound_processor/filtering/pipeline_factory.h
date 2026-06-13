@@ -15,6 +15,17 @@ namespace sound_processor
 class PipelineFactory
 {
 public:
+    /**
+     * @brief Creates a pipeline from descriptors.
+     *
+     * Each descriptor is converted into a concrete filter using the provided
+     * registry, preserving descriptor order.
+     *
+     * @param descriptors Ordered filter descriptions from CLI or JSON.
+     * @param registry Filter registry used to instantiate concrete filters.
+     * @return Configured pipeline.
+     * @throws std::runtime_error if any filter cannot be created.
+     */
     [[nodiscard]] Pipeline create(
         const std::vector<FilterDescriptor>& descriptors,
         const FilterRegistry& registry) const;
